@@ -1,0 +1,77 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'war'
+
+// Define equivalent Maven GAV coordinates.
+group = 'uk.co.xenonique.devoxxuk13'
+archivesBaseName = 'devoxxuk2013-tdd-je7-emgf'
+version = '1.0'
+
+repositories {
+    ivy {
+        url "http://maven.java.net/content/groups/promoted/"
+    }
+    maven {
+        url 'https://maven.java.net/content/groups/promoted'
+    }
+    maven {
+        url 'http://repository.jboss.org/nexus/content/groups/public'
+    }
+    mavenCentral()
+}
+
+
+dependencies {
+
+    providedCompile 'org.glassfish.main.extras:glassfish-embedded-all:4.0-b81'
+    providedCompile 'javax:javaee-api:7.0-b81'
+    providedCompile 'javax:javaee-web-api:7.0-b81'
+
+    compile     'org.glassfish.main.extras:glassfish-embedded-all:4.0-b81'
+    compile     'javax:javaee-api:7.0-b81'
+
+    testCompile 'junit:junit:4.11'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.4'
+}
+
+// compileJava {
+//	sourceCompatibility = 1.7
+//	targetCompatibility = 1.7
+// }
+
+// Override Gradle defaults - a force an exploded JAR view
+sourceSets {
+    main {
+        output.resourcesDir = 'build/classes/main'
+        output.classesDir   = 'build/classes/main'
+    }
+    test {
+        output.resourcesDir = 'build/classes/test'
+        output.classesDir   = 'build/classes/test'
+    }
+}
+
+task(run, dependsOn: 'classes', type: JavaExec) {
+    description = 'Runs the main application'
+    main = 'uk.co.xenonique.devoxxuk13.demo.App'
+    classpath = sourceSets.main.runtimeClasspath
+    args 'Mary', 'Peter', 'Jane'
+}
+
+//task(generateScript, dependon: 'classes') {
+//    description = 'Generates UNIX bash script that launches the program.'
+//    if (!System.properties['os.name'].toLowerCase().contains('windows')) {
+//        // Not Microsoft Windows
+//        new File("SampleRunner").withWriter { out ->
+//            out.println("#!/bin/bash")
+//            out.println("java -cp ${sourceSets.main.runtimeClasspath.getAsPath()}  uk.co.xenonique.devoxxuk13.demo.App")
+//        }
+//        "chmod 755 SampleRunner".execute()
+//    }
+//}
+
