@@ -1,8 +1,28 @@
+/*******************************************************************************
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2013 by Peter Pilgrim, Addiscombe, Surrey, XeNoNiQUe UK
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Developers:
+ * Peter Pilgrim 	-- initial API and implementation
+ * 			-- Blog: http://www.xenonique.co.uk/blog/
+ *			-- Twitter: @peter_pilgrim
+ *
+ * Contributors:
+ *
+ *******************************************************************************/
+
 package uk.co.xenonique.devoxxuk13.demo;
 
 import static org.junit.Assert.*;
 
 import javax.ejb.*;
+import javax.net.ssl.SSLContext;
 import javax.ws.rs.client.*;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
@@ -21,6 +41,7 @@ import org.junit.runner.RunWith;
 
 import java.net.URI;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Verifies the operation of the RestfulBookServiceTest
@@ -43,12 +64,14 @@ public class RestfulBookServiceTest {
     }
 
     @Test
-    public void shouldRetrieveListOfBooksAsPlainText() {
+    public void shouldRetrieveListOfBooksAsPlainText() throws NoSuchAlgorithmException {
         URI uri = URI.create(
                 (baseURL.toExternalForm()+"great/books" ) );
         System.out.printf("uri=%s\n", uri ) ;
 
-        Client client = ClientBuilder.newBuilder().build();
+        // Client client = ClientBuilder.newBuilder().build();
+        // ClientBuilder.newBuilder().sslContext(SSLConfigurator.newInstance(false).createSSLContext()).build();
+        Client client = ClientBuilder.newBuilder().sslContext(SSLContext.getDefault()).build();
         WebTarget target = client.target(uri.toString());
         Response response = target.request().get();
         System.out.printf("response=%s", response);
